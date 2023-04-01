@@ -18,9 +18,9 @@ class game():
         self.x = self.width / 2
         self.y = self.height / 2
 
-        self.snake_block = 15
+        self.snake_block = 10
 
-        self.food_block = 15
+        self.food_block = 10
 
         self.Screen = gaming.display.set_mode((self.width, self.height))
         gaming.display.set_caption("2D game")
@@ -38,8 +38,8 @@ class game():
 
         self.bg = gaming.transform.scale(gaming.image.load('bg.png'), (self.width, self.height))
 
-        self.x_food = round(random.randint(0, self.width - self.x) // 10 ) * 10 
-        self.y_food = round(random.randint(0, self.height - self.y) // 10 ) * 10
+        self.x_food = round(random.randint(0, self.width - self.x - self.snake_block) // 10 ) * 10 
+        self.y_food = round(random.randint(0, self.height - self.y - self.snake_block) // 10 ) * 10
 
         self.font = None
         self.Text_size = 50
@@ -54,6 +54,8 @@ class game():
         self.block = 10
 
         self.score_font = gaming.font.SysFont(self.font, self.Text_score_size)
+
+        self.eat_sound = gaming.mixer.Sound('food.mp3')
 
     def message(self, msg, COLOR):
         self.mesg = self.Font.render(msg, True, COLOR)
@@ -100,9 +102,11 @@ class game():
         self.x += self.x_change
         self.y += self.y_change
         if self.x == self.x_food and self.y == self.y_food:
-            self.x_food = round(random.randint(0, self.width - self.x) // 10 ) * 10 
-            self.y_food = round(random.randint(0, self.height - self.y) // 10 ) * 10
+            self.x_food = round(random.randint(0, self.width - self.snake_block - self.x) // 10 ) * 10 
+            self.y_food = round(random.randint(0, self.height - self.snake_block - self.y) // 10 ) * 10
             self.score += 1
+            gaming.mixer.Sound.play(self.eat_sound)
+            gaming.mixer.music.stop()
     def gameloop(self):
         while not self.stop:
             self.control()
